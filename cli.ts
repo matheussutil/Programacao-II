@@ -59,9 +59,19 @@ if (command === "remove") {
     process.exit(1);
   }
   process.exit(0);
+
 }
 
-console.error("Comando desconhecido. Use 'add', 'list', 'update' ou 'remove'.");
+//Adicione comando help
+if(command === 'help'){
+    console.log("Lista de comandos:");
+    const liComandos = ["remove","update","list","add"];
+    for (let command of liComandos) {
+      console.log("- " + command);
+    }
+}
+console.error("Comando desconhecido. Use 'help' para ver opções de comandos.");
 process.exit(1);
 
-//Adicione a capacidade de marcar um item como concluído.
+
+
