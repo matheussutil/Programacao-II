@@ -26,15 +26,15 @@ const server = Bun.serve({
       });
     }
 
-    // GET /items/buscar?description=... - filtrar itens por descrição
+    // GET /items/buscar?description=...
     if (pathname === "/items/buscar" && method === "GET") {
       try {
-        // Pega o parâmetro 'description' da URL. Ex: /items/buscar?description=estudar
+        
         const searchQuery = searchParams.get("description")?.toLowerCase() || "";
         
         const items = await todo.getItems();
         
-        // Filtra os itens onde a descrição inclui o termo buscado
+        
         const filteredItems = items
           .map(item => item.toJSON())
           .filter(item => item.description.toLowerCase().includes(searchQuery));
