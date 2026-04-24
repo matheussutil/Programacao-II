@@ -3,7 +3,7 @@ import { Item } from "./core";
 
 const filepath = "./lista.json";
 const todo = new ToDo(filepath);
-const port = 3000;
+const port = 6767;
 
 type tipinho = {
     description : string;
@@ -24,6 +24,31 @@ const server = Bun.serve({
       return new Response(JSON.stringify(itemsData), {
         headers: { "Content-Type": "application/json" }
       });
+    }
+
+    // GET /items/buscar?description=... - filtrar itens por descrição
+    if (pathname === "/items/buscar" && method === "GET") {
+      try {
+        // Pega o parâmetro 'description' da URL. Ex: /items/buscar?description=estudar
+        const searchQuery = searchParams.get("description")?.toLowerCase() || "";
+        
+        const items = await todo.getItems();
+        
+        // Filtra os itens onde a descrição inclui o termo buscado
+        const filteredItems = items
+          .map(item => item.toJSON())
+          .filter(item => item.description.toLowerCase().includes(searchQuery));
+
+        return new Response(JSON.stringify(filteredItems), {
+          status: 200,
+          headers: { "Content-Type": "application/json" }
+        });
+      } catch (error) {
+        return new Response(JSON.stringify({ error: "Failed to search items" }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
     }
 
     // POST /items - adicionar novo item
@@ -122,6 +147,8 @@ const server = Bun.serve({
       headers: { "Content-Type": "application/json" }
     });
   }
+
+  
 });
 
 console.log(`Servidor rodando em http://localhost:${port}`);
